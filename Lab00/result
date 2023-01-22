@@ -1,0 +1,40 @@
+==================
+test 1:
+student:
+Please enter your first name followed by a newline
+Hello, 1
+
+grader:
+1;1
+==================
+test 2:
+student:
+Please enter your first name followed by a newline
+Hello, 2
+
+grader:
+2;1
+==================
+test 3:
+student:
+Please enter your first name followed by a newline
+Hello, 3
+
+grader:
+3;1
+==================
+test 4:
+student:
+Please enter your first name followed by a newline
+Hello, 4
+
+grader:
+4;1
+==================
+test 5:
+student:
+Please enter your first name followed by a newline
+Hello, 5
+
+grader:
+5;1
