@@ -1,2 +1,0 @@
-del a.exe
-make
