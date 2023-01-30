@@ -6,7 +6,7 @@ using namespace std;
 int main(int argc, char *argv[]) {
 
     int sortLength = 1;
-    cout << "Sorted array:" << endl;
+    //cout << "Sorted array:" << endl;
     cin >> sortLength;
     int sort[sortLength];
 
@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
         cout << endl;
 
     }
-    cout << endl;
+    //cout << endl;
 
     //to run:  cat test.txt | ./a.exe
 
