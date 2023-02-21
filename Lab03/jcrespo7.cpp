@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include <limits.h>
+#include <limits>
 
 using namespace std;
 
@@ -13,16 +13,16 @@ struct findMaxSubarrayResultType {
 
 findMaxSubarrayResultType findMaxCrossingSubarray(int* arr, int low, int mid, int high) {
     findMaxSubarrayResultType result;
-    int leftSum = INT_MIN;
-    int sum = 0;
-    for (int i=mid;i>low;i--) {
+    double leftSum = -1 * (numeric_limits<double>::infinity());
+    double sum = 0;
+    for (int i=mid;i>=low;i--) {
         sum += arr[i];
         if (sum > leftSum) {
             leftSum = sum;
             result.low = i; // maxLeft
         }
     }
-    int rightSum = INT_MIN;
+    double rightSum = -1 * (numeric_limits<double>::infinity());
     sum = 0;
     for (int i=mid+1; i<high; i++) {
         sum += arr[i];
@@ -31,7 +31,7 @@ findMaxSubarrayResultType findMaxCrossingSubarray(int* arr, int low, int mid, in
             result.high = i; // maxRight
         }
     }
-    result.sum = leftSum + rightSum;
+    result.sum = (int) leftSum + rightSum;
     return result;
 }
 
@@ -48,7 +48,7 @@ findMaxSubarrayResultType findMaxSubarray(int *arr, int low, int high) {
         findMaxSubarrayResultType left = findMaxSubarray(arr, low, mid);
         findMaxSubarrayResultType right = findMaxSubarray(arr, mid+1, high);
         findMaxSubarrayResultType cross = findMaxCrossingSubarray(arr, low, mid, high);
-        if (right.sum >= left.sum && left.sum >= cross.sum) {
+        if (left.sum >= right.sum && left.sum >= cross.sum) {
             return left;
         } else if (right.sum >= left.sum && right.sum >= cross.sum) {
             return right;
