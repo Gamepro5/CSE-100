@@ -1,10 +1,23 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <list>
+using namespace std;
+
+
 int main(int argc, char const *argv[]) {
 
   int number =  0;
   bool repeat = true;
+  int hashSize;
 
+  vector<std::list<int>> Table;
   string input = "";
   cin >> hashSize;
+
+  for (int i=0;i<hashSize;i++) {
+    
+  }
 
   //
 
