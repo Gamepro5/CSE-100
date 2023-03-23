@@ -8,11 +8,7 @@ using namespace std;
 
 int hashSize;
 
-int getiteminlist(std::list<int> l, int n) {
-  for (int i=0;i<n;n++) {
-    
-  }
-}
+
 
 int hashf(int key) {
   return key % hashSize;
@@ -50,25 +46,47 @@ int main(int argc, char const *argv[]) {
       }else if(input[0] == 'd'){
        int bucket = hashf(number);
        if (Table[bucket].size() == 0) {
-        std::cout << "(" << number << "):DELETE_FAILED;";
+        std::cout << number << ":DELETE_FAILED;\n";
        } else {
-        Table[bucket].pop_front();
-        std::cout << "(" << number << "):DELETED;";
+        bool found = false;
+        for (int i=0;i<Table[bucket].size();i++) {
+          list<int>::iterator it = Table[bucket].begin();
+          advance(it, i);
+          if (*it == number) {
+            Table[bucket].erase(it);
+            std::cout << number << ":DELETED;\n";
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          std::cout << number << ":DELETE_FAILED;\n";
+        }
        }
       }else if(input[0] == 's'){
        int bucket = hashf(number);
        bool found = false;
        for (int i=0;i<Table[bucket].size();i++) {
-        if (Table[bucket][i] == number) {
-          std::cout << "(" << number << "):FOUND_AT" << bucket << "," << i << ";";
+        list<int>::iterator it = Table[bucket].begin();
+        advance(it, i);
+        if (*it == number) {
+          std::cout << number << ":FOUND_AT" << bucket << "," << i << ";\n";
           found = true;
         }
-        if (!found) {
-          std::cout << "(" << number << "):NOT_FOUND;";
-        }
        }
+       if (!found) {
+          std::cout << number << ":NOT_FOUND;\n";
+        }
       }else if(input[0] == 'o'){
-       // ...
+       for (int i=0;i<hashSize;i++) {
+        cout << i << ":";
+        for (int j=0;j<Table[i].size();j++) {
+          list<int>::iterator it = Table[i].begin();
+          advance(it, j);
+          cout << *it << "->";
+        }
+        cout << ";" << std::endl;
+       }
       }else if(input[0] == 'e'){
         repeat = false;
       }else{
