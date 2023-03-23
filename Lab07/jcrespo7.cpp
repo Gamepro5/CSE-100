@@ -2,23 +2,29 @@
 #include <vector>
 #include <algorithm>
 #include <list>
+#include <stdlib.h>
+#include <string>
 using namespace std;
 
+int hashSize;
+
+int hashf(int key) {
+  return key % hashSize;
+}
 
 int main(int argc, char const *argv[]) {
 
   int number =  0;
   bool repeat = true;
-  int hashSize;
 
   vector<std::list<int>> Table;
   string input = "";
   cin >> hashSize;
 
   for (int i=0;i<hashSize;i++) {
-    
+    std::list<int> temp = {};
+    Table.push_back(temp);
   }
-
   //
 
   do{
@@ -33,7 +39,8 @@ int main(int argc, char const *argv[]) {
       }
 
       if(input[0] == 'i'){
-       // ...
+       int bucket = hashf(number);
+       Table[bucket].push_back(number);
       }else if(input[0] == 'd'){
        // ...
       }else if(input[0] == 's'){
