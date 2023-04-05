@@ -11,39 +11,53 @@
 
 using namespace std;
 
-struct Rod{
-	int piece1;
-	int piece2;
+struct resultType {
+	int* r;
+	int* s;
 	int total;
 };
 
-Rod bottomUpCutRod(int *p, int n){
+resultType bottomUpCutRod(int *p, int n){
 
-	Rod rod;
-	rod.piece1 = 0;
-	rod.piece2 = 0;
-	rod.total = 0;
+	resultType result;
 
 	int r[n + 1];
+	int s[n + 1];
+	for (int i=0;i<n+1;i++) {
+		s[i] = 0;
+		r[i] = 0;
+	}
 	r[0] = 0;
 	
 	for(int j = 1; j <= n; j++){
 
-		int q = INT_MIN;
+		double q = -1 * (numeric_limits<double>::infinity());
 		for(int i = 1; i <= j; i++){
 			
-			int temp = p[i] + r[j-i];
+			double temp = p[i] + r[j-i];
 			if(q < temp){
 				q = temp;
-				rod.piece1 = i;
-				rod.piece2 = n - i;
-				rod.total = (int)q;
+				result.total = (int)q;
+				s[j] = i;
 			}
 		}
-		r[j] = q;
+		r[j] = (int)q;
 	}
+
+	//result.total = r[n];
+	result.r = r;
+	result.s = s;
+	return result;
+}
+
+void printCutRodSolution(resultType result) {
+	int k = result.total;
+	while (k > 0) {
+		cout << result.s[k] << ";";
+		k = k - result.s[k];
+	}
+	cout << endl;
 	
-	return rod;
 }
 
 int main(){
@@ -55,18 +69,25 @@ int main(){
 	int p[size + 1];
 	
 	for(int i = 1; i <= size; i++){
-	
 		cin >> p[i];
 	}
 	
-	Rod fin = bottomUpCutRod(p, size);
 	
-	cout << fin.total << endl;
-	cout << fin.piece1 << " ";
 	
-	if(fin.piece2 != 0){
-		cout << fin.piece2 << " ";
+	resultType result = bottomUpCutRod(p, size);
+
+	for (int i=0;i<size;i++) {
+		cout << result.r[i] << ";";
 	}
+	cout << endl;
+	for (int i=0;i<size;i++) {
+		cout << result.s[i] << ";";
+	}
+	cout << endl;
+	cout << result.total << endl;
+	printCutRodSolution(result);
+	
+	
 	
 	cout << "-1" << endl;
 
