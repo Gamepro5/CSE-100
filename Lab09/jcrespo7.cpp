@@ -1,104 +1,117 @@
 #include <iostream>
 #include <string>
 #include <limits>
+#include <vector>
 
 using namespace std;
 
-int len = 6;
-
-struct node {
+struct Node {
+    char letter;
     int frequency;
-    node* right;
-    node* left;
+    Node* parent;
+    Node* right;
+    Node* left;
+    Node(char _letter, int _frequency) {
+        letter = _letter;
+        frequency = _frequency;
+        right = nullptr;
+        left = nullptr;
+    }
 };
 
-void minHeapInsert(node** arr, int size, node* key) {
-    size++;
-    arr[size] = key;
-    while ((size>1) && (arr[size/2]->frequency > arr[size]->frequency)) {
-        node* temp = arr[size];
-        arr[size] = arr[size/2];
-        arr[size/2] = temp;
-        size = size/2;
+class NodeList{															
+	public:
+	vector<Node*> arr;
+    vector<Node*> originalArr;
+    bool parentsSet = false;
+    Node* root = new Node('A', 3);		//starting value doesn't matter.				
+	NodeList(){}
+
+
+    void makeList(char letter[], int freq[]){							
+            for(int i = 0; i < 6; i++){
+                Node* temp = new Node(letter[i],freq[i]);
+                arr.push_back(temp);
+                originalArr.push_back(temp);
+            }
+        }
+
+    Node* extractMin(){												
+            int size = arr.size();											
+            Node* smallest = arr[0];										
+            for(int i = 1; i < size; i++){								
+                if(arr[i]->frequency < smallest->frequency ){
+                    smallest = arr[i];
+                }
+            }
+
+            for(int i = 0; i < size; i++){								
+                if(arr[i] == smallest){
+                    arr.erase(arr.begin()+i);							
+                }
+            }
+            return smallest;											
+        }
+
+    void setNodeParents(Node* currentNode, Node* previousNode) { //takes the root node and reads the whole tree recursively, setting parent nodes along the way.
+        currentNode->parent = previousNode;
+        if (currentNode->left != nullptr) {
+            setNodeParents(currentNode->left, currentNode);
+        }
+        if (currentNode->right != nullptr) {
+            setNodeParents(currentNode->right, currentNode);
+        }
     }
 
-}
-
-void minHeapify(node** arr, int i) {
-    int min = i;
-    int leftChild = (2*i) + 1;
-    int rightChild = (2*i) + 2;
-    if ((leftChild < len) && (arr[leftChild]->frequency < arr[min]->frequency)) {
-        min = leftChild;
+    void printPaths() {
+        if (parentsSet == false) {
+            setNodeParents(root,nullptr);
+            parentsSet = true;
+        }
+        for (int i=0;i<6;i++) {
+            cout << originalArr[i]->letter << ":";
+            Node* currentNode = originalArr[i];
+            string tempString = "";
+            while (currentNode->parent != nullptr) {
+                if (currentNode == currentNode->parent->left) {
+                    tempString = "0" + tempString;
+                } else {
+                    tempString = "1" + tempString;
+                }
+                currentNode = currentNode->parent;
+            }
+            cout << tempString;
+            cout << endl;
+        }
     }
-    if ((rightChild < len) && (arr[rightChild]->frequency < arr[min]->frequency)) {
-        min = rightChild;
-    }
-    if (min != i) {
-        node* temp = arr[i];
-        arr[i] = arr[min];
-        arr[min] = temp;
-        minHeapify(arr, len, min);
-    }
-}
 
-void buildMinHeap(node** arr, int size) {
-    for(int i=len/2 -1;i>=0;i--){
-       minHeapify(arr,size,i);
-    }
-}
 
-node* heapExtractMin(node** A, int size) {
-    
-    node* min = A[1];
-    A[1] = A[len];
-    buildMinHeap(A, size-1);
-    return min;
-}
-
-node* huffman(node* C, int size) {
-    int tempSize = size;
-    for (int i=1;i<size-1;i++) {
-        node* temp = new node;
-
-        temp->left = heapExtractMin(C, size);
-        size--;
-        temp->right = heapExtractMin(C, size);
-        size--;
-        temp->frequency = temp->left->frequency + temp->right->frequency;
-        minHeapInsert(C, size, temp);
-    }
-}
+    void huffman(){														
+		for(int i = 0; i < 5; i++){								
+			Node* z = new Node('\0',0);									
+			z->left = extractMin();									
+			z->right = extractMin();									
+			z->frequency = z->left->frequency + z->right->frequency;					
+			arr.push_back(z);											
+		}											
+												
+		root = extractMin();
+														
+	}
+};
 
 int main(int argc, char *argv[]) {
 
-    int arrLength = 6;
-    //cout << "Sorted array:" << endl;
-    //cin >> arrLength;
+    int frequency[6];											
+	for(int i = 0; i < 6; i++){	cin >> frequency[i]; }			
 
-   int intArr[arrLength];
-   node* nodeArr[arrLength];
-   for (int i=0;i<arrLength;i++) {
-        node* myNode = new node;
-        nodeArr[i] = myNode;
-   }
+	NodeList list;
+    char temp[6] = {'A','B','C','D','E','F'};
+	list.makeList(temp,frequency);		
+	list.huffman();
+    list.printPaths();
 
-    for (int i=0;i<arrLength;i++) {
-        cin >> nodeArr[i]->frequency;
-        intArr[i] = nodeArr[i]->frequency;
-        //cout << "Added " << sort[i] << " to be sorted.\n";
-    };
-    buildMinHeap(nodeArr, arrLength);
-
-    node* head = huffman(nodeArr, arrLength);
-    
-
-    //int sum = 0;
-    for (int i=0;i<arrLength;i++) {
-       std::cout << arr[i] << ";";
-       //sum += arr[i];
-    }
-    //cout << endl;
+  	return 0;
 
     //to run:  cat test.txt | ./a.exe
 
