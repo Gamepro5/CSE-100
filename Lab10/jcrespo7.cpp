@@ -2,6 +2,7 @@
 #include <string>
 #include <limits>
 #include <vector>
+#include <cstdlib>
 
 using namespace std;
 
@@ -20,51 +21,53 @@ struct Matrix {
     }
 };
 
+void printOptimalParents(int* s, int i, int j, int n) {
+	if(i==j){
+		cout << "A" << i-1;
+	} else {
+		cout << "(";
+		printOptimalParents(s,i,*((s + i * n)+j),n);
+		printOptimalParents(s,*((s + i * n)+j)+1,j,n);
+		cout << ")";
+	}																	
+}
 
-class NodeList{															
-	public:			
-	NodeList(){}
+void matrixChainOrder(int p[], int n) {
+	int m[n][n];
+	int s[n][n];
+																		
+	for (int i = 1; i < n; i++){											
+		m[i][i] = 0;
+	}
 
-    Matrix matrixMultiply(Matrix A, Matrix B) {
-        if (A.cols != B.rows) {
-            cout << "Incompatable Dimensions!" << endl;
-            return;
-        }
-        Matrix C(A.rows, A.cols);
-        for (int i=0;i<A.rows;i++) {
-            for (int j=0;j<B.cols;j++) {
-                C.matrix[i][j] = 0;
-                for (int k=0;k<A.cols;k++) {
-                    C.matrix[i][j] = C.matrix[i][j] + A.matrix[i][k] * B.matrix[k][j];
-                }
-            }
-        }
-        return C;
+	for (int l = 2; l < n; l++) {
+		for (int i = 1; i < n-l+1; i++) {
+			int j = i + l - 1;
+			m[i][j] = 999999;
+			for (int k = i; k < j; k++) {
+				int q = m[i][k] + m[k+1][j] + p[i-1] * p[k] * p[j];
+				if (q < m[i][j]) {
+					m[i][j] = q;
+					s[i][j] = k;
+				}
+			}
+		}
     }
-
-    Matrix* matrixChainOrder(Matrix* p, int pLength) {
-        int n = pLength - 1;
-        Matrix* result[2];
-        Matrix m(A.rows, A.cols);
-        result[0] =  m;// this is m
-
-    }
-    
-};
+	cout << m[1][n-1] << endl;
+	printOptimalParents((int*)s,1,n-1,n);					
+	cout << endl;							
+}
 
 int main(int argc, char *argv[]) {
 
-    int frequency[6];											
-	for(int i = 0; i < 6; i++){	cin >> frequency[i]; }			
-
-	NodeList list;
-    char temp[6] = {'A','B','C','D','E','F'};
-	list.makeList(temp,frequency);		
-	list.huffman();
-    list.printPaths();
-
-  	return 0;
-
+    int matrixListSize = 0;
+    cin >> matrixListSize;
+  	
+    int matrixList[matrixListSize+1];										
+	for(int i = 0; i < matrixListSize+1; i++){								
+		cin >> matrixList[i]; 											
+	}
+    matrixChainOrder(matrixList, matrixListSize+1);
     //to run:  cat test.txt | ./a.exe
 
     

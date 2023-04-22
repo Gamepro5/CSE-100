@@ -1,6 +1,10 @@
 {
     "files.associations": {
         "system_error": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "new": "cpp",
+        "functional": "cpp",
+        "vector": "cpp",
+        "limits": "cpp"
     }
 }
